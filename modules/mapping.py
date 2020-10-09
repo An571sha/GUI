@@ -52,10 +52,3 @@ class Mapping:
         width = len(imap['tiles'][0]) * 120
 
         return [width, height]
-    #
-    # def load_map():
-    #     root.filename = filedialog.askopenfilename(initialdir="maps/", title="Select map",
-    #                                                filetypes=(("yaml files", "*.yaml"), ("all files", "*.*")))
-    #     map_file = root.filename.split('/')[-1][:-5]
-    #
-    #     gen_map(map_file)

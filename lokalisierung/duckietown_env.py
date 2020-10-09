@@ -129,9 +129,9 @@ class DuckietownEnv(Simulator, threading.Thread, Publisher):
 
             speed = 0.2
             tol = 0.15
-            if (abs(self.cur_pos[0] - self.line[io][1] / 10) <= tol and abs(self.cur_pos[2] - self.line[io][0] / 10) <= tol):
+            if abs(self.cur_pos[0] - self.line[io][1] / 10) <= tol and abs(self.cur_pos[2] - self.line[io][0] / 10) <= tol:
                 io = io + 1
-                if (io == len(self.line)):
+                if io == len(self.line):
                     io = 0
                     self.line = []
                     print('length of line', len(self.line))

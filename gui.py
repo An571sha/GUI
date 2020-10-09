@@ -1,18 +1,13 @@
 # The following class defines GUI.
-# TODO: ADD Description and complete document comments
 import threading
 import tkinter as tk
 import numpy as np
-#from gym_duckietown.envs.duckietown_env import DuckietownEnv
 from lokalisierung.duckietown_env import DuckietownEnv
 from modules import astar, navigation, grid, mapping, findpath
 import time
 from Observer import Subscriber
 from threading import Thread
 
-
-# from exercises import basic_control
-# from lokalisierung.duckietown_env import DuckietownEnv
 
 class GUI(threading.Thread, Subscriber):
 
@@ -37,6 +32,7 @@ class GUI(threading.Thread, Subscriber):
         self.start_point = tk.StringVar()
         self.end_point = tk.StringVar()
         self.display_speed = tk.StringVar()
+        self.label_explain = tk.StringVar()
 
         self.myduckietown = DuckietownEnv(GUI=self, domain_rand=False, draw_bbox=False, map_name="udem1")
         self.START = [0, 0]
@@ -77,7 +73,8 @@ class GUI(threading.Thread, Subscriber):
 
     def draw_expected_pos(self, pos):
         self.canvas.delete('mean_pos_particle')
-        self.canvas.create_oval(pos[0] * 120, pos[2] * 120, pos[0] * 120 + 6, pos[2] * 120 + 6, fill="yellow", tags='mean_pos_particle')
+        self.canvas.create_oval(pos[0] * 120, pos[2] * 120, pos[0] * 120 + 6, pos[2] * 120 + 6, fill="yellow",
+                                tags='mean_pos_particle')
 
     def set_gui_label_buttons(self):
 
@@ -112,6 +109,14 @@ class GUI(threading.Thread, Subscriber):
                                                                              sticky='NW',
                                                                              padx=615,
                                                                              pady=0)
+
+        self.label_explain.set("Set Start using middle mouse click and end using right mouse click")
+
+        tk.Label(self.root, textvariable=self.label_explain).grid(row=1, column=1,
+                                                                  sticky='W',
+                                                                  padx=200,
+                                                                  pady=0)
+
         self.display_speed.set('Speed:' + '0' + 'cm/s')
 
     def keypress(self, event):
@@ -206,7 +211,7 @@ class GUI(threading.Thread, Subscriber):
         """
 
         :param ducky_pos:
-        :param ducky_pos:
+        :param ducky_angle:
         :return:
 
         """
@@ -273,12 +278,9 @@ class GUI(threading.Thread, Subscriber):
         :return:
 
         """
-        # print("so vile threads laufen", threading.active_count())
         if len(self.ovals) > 0:
             for o in self.ovals:
                 self.canvas.delete(o)
-
-        # print('INIT', self.start, self.end)
         line = []
         line = astar.main(self.start, self.end)
 
@@ -291,42 +293,13 @@ class GUI(threading.Thread, Subscriber):
                 x2, y2 = (x + 3), (y + 3)
                 self.canvas.create_oval(x1, y1, x2, y2, fill="#00ffff", tags='oval' + str(i))
                 self.ovals.append('oval' + str(i))
-
-        # t = Thread(target=self.move_ducky, args=(line,))
-        # t.start()
-
-        # subprocess.call(['python3', 'sim.py'])
-        # self.move_ducky(line)
-        # t = Process(target=self.startGUI, args=(line,))
-        # t.start()
-        # self.root.lift()
-        # self.myduckietown.reset()
-        # self.myduckietown.render()
-        # self.myduckietown.startControl(line)
-        # self.root.lift()
-        # t = DuckietownEnv(line=line, GUI=self, domain_rand=False, draw_bbox=False, map_name="udem1")
         self.myduckietown.line = line
         print('status of thread', self.myduckietown.is_alive())
         if not self.myduckietown.is_alive():
             self.myduckietown.start()
-        # self.root.mainloop()
-        # t = Process(target=self.move_ducky, args=(line,))
-        # t.join()
-        # x = Thread(target=self.myduckietown.start, args=(line,))
-        # x.start()
-
         print("wie viele threads laufen?", threading.active_count())
-
-        # x = Thread(target=self.myduckietown.start, args=(line,))
-        # x.start()
         self.start = []
         self.end = []
-        # self.myduckietown.start(line)
-
-    def startGUI(self, line):
-        self.myduckietown.reset()
-        self.myduckietown.render()
-        self.myduckietown.start(line)
 
     def draw_buttons(self):
 
@@ -351,6 +324,7 @@ class GUI(threading.Thread, Subscriber):
                                                                                              sticky='NW',
                                                                                              padx=315,
                                                                                              pady=0)
+
         tk.Checkbutton(self.root, text='Enable/Disable grid', command=self.generated_grid.check_grid).grid(row=1,
                                                                                                            column=1,
                                                                                                            sticky='NW',
@@ -361,7 +335,7 @@ class GUI(threading.Thread, Subscriber):
     def calc_points(pos, angle):
 
         """
-        :param pos: mm
+        :param pos:
         :param angle:
         :return:
 
@@ -399,5 +373,3 @@ class GUI(threading.Thread, Subscriber):
 if __name__ == "__main__":
     t = Thread(target=GUI().main(), args=())
     t.start()
-    # GUI().main()
-    print("hallo ich kann sachen machen")

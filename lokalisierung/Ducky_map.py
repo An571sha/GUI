@@ -52,7 +52,7 @@ class Particle:
             if distance >= 0.5:
                 return 1 - distance
             return distance
-        if self.tile.type == "3way_left/S":  # TODO distance to courve
+        if self.tile.type == "3way_left/S":
             return self.p_x % 1
         if self.tile.type == "3way_left/N":
             return 1 - self.p_x % 1
@@ -95,11 +95,7 @@ def get_random_particles_list(count):
 
 def filter_particles(particle_list, map: DuckieMap):
     for i in particle_list:
-        # print(int(i.cordX))
-        # print(int(i.cordY))
         wert = map.search_tile(int(i.p_x), int(i.p_y)).type
-        # linex = tiles[0][int(i.cordY)]
-        # wert = linex[int(i.cordX)]
         if wert == "grass" or wert == "asphalt" or wert == "floor":
             print(i)
             particle_list.remove(i)
@@ -108,13 +104,10 @@ def filter_particles(particle_list, map: DuckieMap):
 
 if __name__ == '__main__':
     my_map = DuckieMap("../gym_duckietown/maps/udem1.yaml")
-    # print(my_map.tiles)
     particle_list = get_random_particles_list(10)
     for i in particle_list:
         i.set_tile(my_map)
-    # print(particle_list)
     particle_list1 = filter_particles(particle_list, my_map)
-    # print(particle_list)
     for i in particle_list1:
         print(f"particle name: {i.name} particle X: {i.p_x} particle y: {i.p_y} tile: {i.tile}")
         print(i.distance_to_wall())
