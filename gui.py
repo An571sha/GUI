@@ -3,7 +3,8 @@
 import threading
 import tkinter as tk
 import numpy as np
-from gym_duckietown.envs.duckietown_env import DuckietownEnv
+#from gym_duckietown.envs.duckietown_env import DuckietownEnv
+from lokalisierung.duckietown_env import DuckietownEnv
 from modules import astar, navigation, grid, mapping, findpath
 import time
 from Observer import Subscriber
@@ -62,6 +63,7 @@ class GUI(threading.Thread, Subscriber):
         print("Wird update auch während der simulation aufgerufen?")
         self.draw_particles(message[0])
         self.draw_ducky_bot(message[1], message[2])
+        self.draw_expected_pos(message[3])
 
     def draw_particles(self, parti):
         for x in range(0, len(parti)):
@@ -72,6 +74,10 @@ class GUI(threading.Thread, Subscriber):
             self.canvas.create_oval(parti[x].p_x * 120, parti[x].p_y * 120, parti[x].p_x * 120 + 6,
                                     parti[x].p_y * 120 + 6, fill="#0000ff",
                                     tags='parti' + str(x))
+
+    def draw_expected_pos(self, pos):
+        self.canvas.delete('mean_pos_particle')
+        self.canvas.create_oval(pos[0] * 120, pos[1] * 120, pos[0] * 120 + 6, pos[1] * 120 + 6, fill="yellow", tags='mean_pos_particle')
 
     def set_gui_label_buttons(self):
 
@@ -200,7 +206,7 @@ class GUI(threading.Thread, Subscriber):
         """
 
         :param ducky_pos:
-        :param old_ducky_pos:
+        :param ducky_pos:
         :return:
 
         """
@@ -210,8 +216,8 @@ class GUI(threading.Thread, Subscriber):
 
         print("ducky_pos in draw duckiebot", ducky_pos)
 
-        #angle = np.arctan2(ducky_pos[0], ducky_pos[1])
-        points = self.calc_points(ducky, ducky_angle - np.pi/2)
+        # angle = np.arctan2(ducky_pos[0], ducky_pos[1])
+        points = self.calc_points(ducky, ducky_angle - np.pi / 2)
         self.canvas.delete("ducky")
         self.ducky = self.canvas.create_polygon(points, fill="red", tags='ducky')
 
@@ -267,7 +273,7 @@ class GUI(threading.Thread, Subscriber):
         :return:
 
         """
-        #print("so vile threads laufen", threading.active_count())
+        # print("so vile threads laufen", threading.active_count())
         if len(self.ovals) > 0:
             for o in self.ovals:
                 self.canvas.delete(o)
@@ -286,19 +292,19 @@ class GUI(threading.Thread, Subscriber):
                 self.canvas.create_oval(x1, y1, x2, y2, fill="#00ffff", tags='oval' + str(i))
                 self.ovals.append('oval' + str(i))
 
-        #t = Thread(target=self.move_ducky, args=(line,))
-        #t.start()
+        # t = Thread(target=self.move_ducky, args=(line,))
+        # t.start()
 
         # subprocess.call(['python3', 'sim.py'])
         # self.move_ducky(line)
         # t = Process(target=self.startGUI, args=(line,))
         # t.start()
-        #self.root.lift()
-        #self.myduckietown.reset()
-        #self.myduckietown.render()
-        #self.myduckietown.startControl(line)
-        #self.root.lift()
-        #t = DuckietownEnv(line=line, GUI=self, domain_rand=False, draw_bbox=False, map_name="udem1")
+        # self.root.lift()
+        # self.myduckietown.reset()
+        # self.myduckietown.render()
+        # self.myduckietown.startControl(line)
+        # self.root.lift()
+        # t = DuckietownEnv(line=line, GUI=self, domain_rand=False, draw_bbox=False, map_name="udem1")
         self.myduckietown.line = line
         print('status of thread', self.myduckietown.is_alive())
         if not self.myduckietown.is_alive():
@@ -388,6 +394,7 @@ class GUI(threading.Thread, Subscriber):
 
         navigation.Navigation(self.canvas)
         self.root.mainloop()
+
 
 if __name__ == "__main__":
     t = Thread(target=GUI().main(), args=())

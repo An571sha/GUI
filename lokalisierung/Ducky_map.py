@@ -4,6 +4,7 @@ import random
 ROW_MAP = 7.0
 COLUMN_MAP = 8.0
 
+
 class DuckieMap:
 
     def __init__(self, yaml_file):
@@ -23,9 +24,10 @@ class DuckieMap:
     def search_tile(self, x, y):
         return self.tiles[x][y]
 
+
 class Particle:
 
-    def __init__(self, p_x, p_y, weight, name, angle = -1):
+    def __init__(self, p_x, p_y, weight, name, angle=-1):
         self.p_x = p_x
         self.p_y = p_y
         self.tile = None
@@ -34,10 +36,10 @@ class Particle:
         self.angle = angle
 
     def __repr__(self):
-        return 'Particle '+str(self.name)
+        return 'Particle ' + str(self.name)
 
     def set_tile(self, map):
-        self.tile = map.search_tile(int(self.p_x),int(self.p_y))
+        self.tile = map.search_tile(int(self.p_x), int(self.p_y))
 
     def distance_to_wall(self):
         if self.tile.type == "straight/E" or self.tile.type == "straight/W":  # returns the distance to the closest wall (the wall can be above or under the particle)
@@ -77,7 +79,6 @@ class Tile:
         return self.x, self.y
 
 
-
 def get_random_particles_list(count):
     p_list = list()
     i = 0
@@ -92,29 +93,28 @@ def get_random_particles_list(count):
     return p_list
 
 
-def filter_particles(particle_list, map:DuckieMap):
+def filter_particles(particle_list, map: DuckieMap):
     for i in particle_list:
         # print(int(i.cordX))
         # print(int(i.cordY))
-        wert = map.search_tile(int(i.p_x),int(i.p_y)).type
-        #linex = tiles[0][int(i.cordY)]
-        #wert = linex[int(i.cordX)]
+        wert = map.search_tile(int(i.p_x), int(i.p_y)).type
+        # linex = tiles[0][int(i.cordY)]
+        # wert = linex[int(i.cordX)]
         if wert == "grass" or wert == "asphalt" or wert == "floor":
             print(i)
             particle_list.remove(i)
     return particle_list
 
+
 if __name__ == '__main__':
     my_map = DuckieMap("../gym_duckietown/maps/udem1.yaml")
-    #print(my_map.tiles)
+    # print(my_map.tiles)
     particle_list = get_random_particles_list(10)
     for i in particle_list:
         i.set_tile(my_map)
-    #print(particle_list)
+    # print(particle_list)
     particle_list1 = filter_particles(particle_list, my_map)
-    #print(particle_list)
+    # print(particle_list)
     for i in particle_list1:
         print(f"particle name: {i.name} particle X: {i.p_x} particle y: {i.p_y} tile: {i.tile}")
         print(i.distance_to_wall())
-
-
