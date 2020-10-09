@@ -77,7 +77,7 @@ class GUI(threading.Thread, Subscriber):
 
     def draw_expected_pos(self, pos):
         self.canvas.delete('mean_pos_particle')
-        self.canvas.create_oval(pos[0] * 120, pos[1] * 120, pos[0] * 120 + 6, pos[1] * 120 + 6, fill="yellow", tags='mean_pos_particle')
+        self.canvas.create_oval(pos[0] * 120, pos[2] * 120, pos[0] * 120 + 6, pos[2] * 120 + 6, fill="yellow", tags='mean_pos_particle')
 
     def set_gui_label_buttons(self):
 
