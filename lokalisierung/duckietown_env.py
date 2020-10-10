@@ -98,7 +98,6 @@ class DuckietownEnv(Simulator, threading.Thread, Publisher):
         return rad - (tile_size / 20 - dist) * w
 
     def run(self):
-        print("asd", self.line[0][1], self.line[0][0])
         io = 0
         self.cur_pos = [self.line[0][1] / 10, 0, self.line[0][0] / 10]
         self.cur_angle = np.pi / 2
@@ -120,9 +119,6 @@ class DuckietownEnv(Simulator, threading.Thread, Publisher):
                 mcl.spawn_particle_list(self.cur_pos, self.cur_angle)
                 newAStar = False
             lane_pose = self.get_lane_pos2(self.cur_pos, self.cur_angle)
-            print("self.cur_pose =")
-            print(self.cur_pos)
-            print("\n")
             distance_to_road_center = lane_pose.dist
             angle_from_straight_in_rads = lane_pose.angle_rad
             print("dist = ", distance_to_road_center, " rad = ", angle_from_straight_in_rads)
@@ -134,7 +130,6 @@ class DuckietownEnv(Simulator, threading.Thread, Publisher):
                 if io == len(self.line):
                     io = 0
                     self.line = []
-                    print('length of line', len(self.line))
                     continue
             steering = self.global_angle_arr(self.line, io)
             obs, reward, done, info = self.step([speed, steering])
