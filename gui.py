@@ -56,7 +56,6 @@ class GUI(threading.Thread, Subscriber):
                                     'distance_traveled': 0, 'number_clicks': 0}
 
     def update(self, message):
-        print("Wird update auch während der simulation aufgerufen?")
         self.draw_particles(message[0])
         self.draw_ducky_bot(message[1], message[2])
         self.draw_expected_pos(message[3])
